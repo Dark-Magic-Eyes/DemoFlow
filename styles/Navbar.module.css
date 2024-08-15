@@ -5,7 +5,9 @@
   left: 0;
   padding: 1em;
   display: flex;
+  opacity: 0;
   justify-content: right;
+  z-index: -1;
 }
 
 .address {

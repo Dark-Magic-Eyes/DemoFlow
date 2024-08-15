@@ -1,7 +1,7 @@
 "use client";
 import { useEffect } from "react";
+import * as fcl from '@onflow/fcl'
 import { Unity, useUnityContext } from "react-unity-webgl";
-import styles from "../../styles/Home.module.css";
 import useCurrentUser from "../../hooks/useCurrentUser";
 
 const GameView = () => {
@@ -25,6 +25,9 @@ const GameView = () => {
   const handleConnectWallet = () => {
     document.getElementById("ConnectButton").click();
   };
+  const handleDisconnectWallet = () =>{
+    fcl.unauthenticate();
+  }
 
   const ChangeAddressText = (address: string) => {
     sendMessage("FlowManager", "ChangeAddressText", address);
@@ -37,22 +40,28 @@ const GameView = () => {
     }
     if(!user.loggedIn && isLoaded)
     {
-        ChangeAddressText("Connect Wallet");
+        ChangeAddressText("");
+    }
+    if(!isLoaded)
+    {
+      handleDisconnectWallet();
     }
   }, [isLoaded, user.loggedIn]);
 
 
   useEffect(() => {
     addEventListener("ConnectWallet", handleConnectWallet);
+    addEventListener("DisconnectWallet", handleDisconnectWallet);
     return () => {
       removeEventListener("ConnectWallet", handleConnectWallet);
+      removeEventListener("DisconnectWallet", handleDisconnectWallet);
     };
   }, [addEventListener, removeEventListener, handleConnectWallet]);
 
   return (
-    <div style={{width: "100vw", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center"}}>
+    <div style={{width: "100vw", height: "100vh", display: "flex", alignItems: "center", justifyContent: "center", zIndex: "2"}}>
       {!isLoaded && (
-        <p className="absolute z-[-1]">
+        <p style={{display: "flex", position: "absolute"}}>
           Loading Application... {Math.round(loadingProgression * 100)}%
         </p>
       )}

@@ -7,7 +7,7 @@ export default function Navbar() {
   const user = useCurrentUser()
 
   return (
-    <div className={navbarStyles.navbar}>
+    <div className={navbarStyles.navbar} >
       {!user.loggedIn && 
         <button 
           id='ConnectButton'
