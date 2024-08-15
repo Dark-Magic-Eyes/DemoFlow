@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import * as fcl from '@onflow/fcl'
 import { Unity, useUnityContext } from "react-unity-webgl";
 import useCurrentUser from "../../hooks/useCurrentUser";
@@ -23,15 +23,19 @@ const GameView = () => {
   const user = useCurrentUser()
 
   const handleConnectWallet = () => {
-    document.getElementById("ConnectButton").click();
+    // document.getElementById("ConnectButton").click();
+    fcl.authenticate().then((result)=>{
+      ChangeAddressText(result.addr)
+    });
   };
   const handleDisconnectWallet = () =>{
     fcl.unauthenticate();
   }
 
-  const ChangeAddressText = (address: string) => {
+  const ChangeAddressText = useCallback((address: string) => {
+    if(address == null) address = "";
     sendMessage("FlowManager", "ChangeAddressText", address);
-  } 
+  }, [isLoaded])
 
   useEffect(()=>{
     if(isLoaded && user.loggedIn)
